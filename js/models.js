@@ -150,7 +150,8 @@ class User {
   static async signup(username, password, name) {
     let response;
     try {
-      const response = await axios({
+      console.log({ user: { username, password, name } });
+      response = await axios({
         url: `${BASE_URL}/signup`,
         method: "POST",
         data: { user: { username, password, name } },
@@ -159,6 +160,8 @@ class User {
       console.log("error: ", err);
       alert("Server error on signup");
     }
+
+    console.log("response:", response);
 
     let { user } = response.data;
 
