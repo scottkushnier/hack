@@ -13,7 +13,7 @@ function navAllStories(evt) {
   if (currentUser) {
     showFavoriteStories();
   }
-  $(".nav-link").removeClass("bold");
+  formatForLoggedInStories();
 }
 
 $body.on("click", "#nav-all", navAllStories);
@@ -32,14 +32,19 @@ $navLogin.on("click", navLoginClick);
 
 /** When a user first logins in, update the navbar to reflect that. */
 
+function formatForLoggedInStories() {
+  $(".nav-link").removeClass("bold");
+  $(".story-user").addClass("list_indent");
+  $(".story-author").addClass("list_indent");
+  $navLogin.addClass("hide");
+  $navUserProfile.text(`${currentUser.username}`);
+}
+
 function updateNavOnLogin() {
   console.debug("updateNavOnLogin");
-  $navUserProfile.text(`${currentUser.username}`);
-  $navLogin.addClass("hide");
   $(".user-based").removeClass("hide");
   $(".trashcan").addClass("hide");
-  $(".story-user").removeClass("nologin");
-  $(".story-author").removeClass("nologin");
+  formatForLoggedInStories();
 }
 
 function updateNavOnLogout() {
@@ -62,18 +67,31 @@ $navSubmit.on("click", navSubmit);
 
 /*---------------------------------------------------------------------*/
 
+function formatForFavStories() {
+  $(".nav-link").removeClass("bold");
+  $navFavs.addClass("bold");
+  $(".story-user").addClass("list_indent");
+  $(".story-author").addClass("list_indent");
+}
+
 function navFavStories(evt) {
   console.debug("navFavStories");
   hidePageComponents();
   putStoriesOnPage(favStories());
   showFavoriteStories();
-  $(".nav-link").removeClass("bold");
-  $navFavs.addClass("bold");
+  formatForFavStories();
 }
 
 $navFavs.on("click", navFavStories);
 
 /*---------------------------------------------------------------------*/
+
+function formatForMyStories() {
+  $(".nav-link").removeClass("bold");
+  $navMine.addClass("bold");
+  $(".story-user").addClass("mylist_indent");
+  $(".story-author").addClass("mylist_indent");
+}
 
 function navMyStories(evt) {
   console.debug("navMyStories");
@@ -81,10 +99,7 @@ function navMyStories(evt) {
   putStoriesOnPage(myStories());
   showFavoriteStories();
   showTrashcans();
-  $(".nav-link").removeClass("bold");
-  $navMine.addClass("bold");
-  $(".story-user").addClass("mylist");
-  $(".story-author").addClass("mylist");
+  formatForMyStories();
 }
 
 $navMine.on("click", navMyStories);

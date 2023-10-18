@@ -30,34 +30,28 @@
 }
 
 .story-author {
-  margin-left: 1.8em;
+  margin-left: 0px;
   color: #418d2a;
   font-weight: bold;
   display: block;
   margin-top: 7px;
 }
 
-.story-author.nologin {
-  margin-left: 0px;
-}
-
-.story-author.mylist {
-  margin-left: 3.2em;
-}
-
 .story-user {
-  margin-left: 1.8em;
+  margin-left: 0px;
   display: block;
   color: #f4a53a;
   font-weight: bold;
   margin-top: 7px;
 }
 
-.story-user.nologin {
-  margin-left: 0px;
+/* indent info over because of star (to mark favorites) icon */
+.list_indent {
+  margin-left: 1.8em;
 }
 
-.story-user.mylist {
+/* indent info over further because of trashcan icon (click to delete) */
+.mylist_indent {
   margin-left: 3.2em;
 }
 

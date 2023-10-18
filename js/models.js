@@ -2,6 +2,10 @@
 
 const BASE_URL = "https://hack-or-snooze-v3.herokuapp.com";
 
+async function sleep(ms) {
+  return new Promise((resolv) => setTimeout(resolv, ms));
+}
+
 /******************************************************************************
  * Story: a single story in the system
  */
@@ -106,6 +110,7 @@ function removeStoryFromList(thisStory, list) {
 /*----------------------------------------------------------------------------------*/
 
 async function deleteStory(story) {
+  // await sleep(4000);
   const response = await axios.delete(`${BASE_URL}/stories/${story.storyId}`, {
     data: {
       token: localStorage.token,
@@ -241,6 +246,7 @@ class User {
   }
 
   async markFavStory(story) {
+    // await sleep(5000);
     this.favorites.push(story);
     let response;
     try {
@@ -258,6 +264,7 @@ class User {
   }
 
   async markNotFavStory(story) {
+    // await sleep(3000);
     this.favorites = removeStoryFromList(story, this.favorites);
     let response;
     try {

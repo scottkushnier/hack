@@ -95,10 +95,6 @@ function showTrashcans() {
   });
 }
 
-async function sleep(ms) {
-  return new Promise((resolv) => setTimeout(resolv, ms));
-}
-
 async function submitStory(evt) {
   console.debug("submit story");
   evt.preventDefault();
@@ -158,9 +154,34 @@ const iconInfo = {
 };
 
 function changeToIcon(iTag, iconName) {
-  console.log("iTag", iTag);
+  // console.log("iTag", iTag);
   iTag.removeClass(iconInfo.all);
   iTag.addClass(iconInfo[iconName]);
+}
+
+function liForClick(e) {
+  if (e.target.tagName === "I") {
+    return e.target.parentElement.parentElement;
+  } else if (e.target.tagName === "SPAN") {
+    return e.target.parentElement;
+  }
+}
+
+function iTagIsHollowStar(iTag) {
+  return iTag.hasClass("far");
+}
+
+function setupTimeOutIcon(promise, iTag, waitIcon, timeout) {
+  let finished = false;
+  promise.then(function () {
+    // console.log("promise finished");
+    finished = true;
+  });
+  setTimeout(function () {
+    if (!finished) {
+      changeToIcon(iTag, waitIcon);
+    }
+  }, timeout);
 }
 
 async function clickStar(e) {
@@ -168,71 +189,39 @@ async function clickStar(e) {
   if (currentUser === undefined) {
     return;
   }
-  let li;
-  if (e.target.tagName === "I") {
-    li = e.target.parentElement.parentElement;
-  } else if (e.target.tagName === "SPAN") {
-    li = e.target.parentElement;
-  } else {
-    return;
-  }
+  const li = liForClick(e);
   const storyId = li.id;
   const story = digOutStory(storyId, storyList.stories);
-
   const iTag = $(li).find(".star").find("I");
-  console.log("iTag", iTag);
+  // console.log("iTag", iTag);
 
-  if (iTag.hasClass("far")) {
+  if (iTagIsHollowStar(iTag)) {
     // toggle to "favorite"
     console.log("fav on");
-    console.log(iTag.find(".far"));
-    let finished = false;
-    setTimeout(function () {
-      if (!finished) {
-        changeToIcon(iTag, "stopwatch");
-      }
-    }, 200);
-    // await sleep(2000);
-    await currentUser.markFavStory(story);
-    finished = true;
+    const promise = currentUser.markFavStory(story);
+    setupTimeOutIcon(promise, iTag, "stopwatch", 200);
+    await promise;
     changeToIcon(iTag, "solidstar");
   } else {
     // toggle to "not a favorite"
     console.log("fav off");
-    let finished = false;
-    setTimeout(function () {
-      if (!finished) {
-        changeToIcon(iTag, "stopwatch");
-      }
-    }, 200);
-    // await sleep(3000);
-    await currentUser.markNotFavStory(story);
-    finished = true;
+    const promise = currentUser.markNotFavStory(story);
+    setupTimeOutIcon(promise, iTag, "stopwatch", 200);
+    await promise;
     changeToIcon(iTag, "star");
   }
 }
 
 async function clickTrash(e) {
   console.debug("click trash");
-  let li;
-  if (e.target.tagName === "I") {
-    li = e.target.parentElement.parentElement;
-  } else {
-    li = e.target.parentElement;
-  }
+  const li = liForClick(e);
   const iTag = $(li).find(".trashcan").find("I");
-  console.log("iTag", iTag);
-  console.log("tgt:", li);
+  // console.log("iTag", iTag);
+  // console.log("tgt:", li);
   const story = digOutStory(li.id, storyList.stories);
-  let finished = false;
-  setTimeout(function () {
-    if (!finished) {
-      changeToIcon(iTag, "stopwatch");
-    }
-  }, 200);
-  // await sleep(3000);
-  await deleteStory(story);
-  finished = true;
+  const promise = deleteStory(story);
+  setupTimeOutIcon(promise, iTag, "stopwatch", 200);
+  await promise;
   console.log(story);
   storyList.stories = removeStoryFromList(story, storyList.stories);
   const hr = li.nextElementSibling; // remove line below story li
